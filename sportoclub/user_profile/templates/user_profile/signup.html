@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Sign up for {{ block.super }}{% endblock title %}
 {% block content %}
-<h1>Sign up for PTU12 Library</h1>
+<h1>Sign up for Exercises app</h1>
 <form action="{{ request.path }}" method="post">
     {% csrf_token %}
     <p>
