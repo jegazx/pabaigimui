@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_available_languages as LANGUAGES %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Exercises app {% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<main>
+    {% block content %}   
+    <h3>Welcome to create or see your workout plan you need to Register or Login!!!</h3>
+    <a href="{% url 'login'%}">
+    <button type="button" class="btn btn-primary btn-lg">Login</button></a>
+    <a href="{% url 'signup' %}">
+    <button type="button" class="btn btn-primary btn-lg">Register</button></a>
+    {% endblock content %}
+</main>
+</html>
