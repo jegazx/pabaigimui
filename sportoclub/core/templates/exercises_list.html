@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Exercise List</h2>
+
+  <form method="GET">
+    <label for="category">Choose a category:</label>
+    <select name="category" id="category">
+      <option value="">--All--</option>
+      {% for category in categories %}
+      <option value="{{ category.id }}" {% if category.id == current_category_id %}selected{% endif %}>{{ category.name }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+  </form>
+
+  <ul>
+    {% for exercise in exercises %}
+      <li>
+        <h3><a href="{% url 'exercise_detail' exercise.id %}">{{ exercise.name }}</a></h3>
+        {% comment %} <p>Category: {{ exercise.category.name }}</p>
+        <p>Video URL: {{ exercise.video_url }}</p> {% endcomment %}
+      </li>
+    {% empty %}
+      <li>Choose Exercise Category. </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+

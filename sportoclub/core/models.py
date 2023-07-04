@@ -5,9 +5,19 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+class ExerciseCategory(models.Model):
+    name = models.CharField(max_length=200)
+
+    class Meta:
+        verbose_name_plural = "Exercise  Categories"
+
+    def __str__(self):
+        return self.name
+
 class Exercise(models.Model):
     name = models.CharField(max_length=200)
     video_url = models.URLField()
+    category = models.ForeignKey(ExerciseCategory, on_delete=models.SET_NULL, null=True, related_name="exercises")
 
     class Meta:
         verbose_name = _("exercise")
