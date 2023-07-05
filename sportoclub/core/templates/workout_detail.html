@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{{ object.name }}</h2>
+    <ul>
+    {% for exercise in object.exercises.all %}
+        <li>
+            <h3>{{ exercise.name }}</h3>
+            <p>Category: {{ exercise.category.name }}</p>
+            <p>Video URL: {{ exercise.video_url }}</p>
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

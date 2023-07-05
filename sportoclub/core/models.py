@@ -16,7 +16,7 @@ class ExerciseCategory(models.Model):
 
 class Exercise(models.Model):
     name = models.CharField(max_length=200)
-    video_url = models.URLField()
+    video_embed = models.CharField(max_length=200)
     category = models.ForeignKey(ExerciseCategory, on_delete=models.SET_NULL, null=True, related_name="exercises")
 
     class Meta:

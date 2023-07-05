@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from .models import Exercise, Workout, WorkoutExercise, SetLog, ExerciseCategory
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import WorkoutForm
 
 # Create your views here.
 def index(request):
@@ -13,12 +14,6 @@ def index(request):
     else:
         # User is not logged in
         return render(request, 'index.html')
-    
-from django.shortcuts import render
-from .models import Exercise, ExerciseCategory
-
-from django.shortcuts import render
-from .models import Exercise, ExerciseCategory
 
 def exercises_list(request):
     categories = ExerciseCategory.objects.all()
@@ -30,10 +25,9 @@ def exercises_list(request):
 
     return render(request, 'exercises_list.html', {'exercises': exercises, 'categories': categories, 'current_category_id': category_id})
 
-def get_embed_url(self):
-    video_id = self.video_url.split('/')[-1] # splits on slash and takes the last piece
-    print(video_id)
-    return f"https://www.youtube.com/embed/{video_id}"
+# def get_embed_url(self):
+#     video_id = self.video_embed.split('/')[-1] # splits on slash and takes the last piece
+#     return video_id
 
 
 def exercise_detail(request, pk: int):
@@ -50,11 +44,34 @@ class ExerciseDetailView(DetailView):
 
 class ExerciseCreateView(LoginRequiredMixin, CreateView):
     model = Exercise
-    fields = ('name', 'video_url', 'category') 
+    fields = ('name', 'video_embed', 'category') 
     template_name = 'exercise_form.html'
 
 class ExerciseUpdateView(LoginRequiredMixin, UpdateView):
     model = Exercise
-    fields = ('name', 'video_url', 'category')
+    fields = ('name', 'video_embed', 'category')
     template_name = 'exercise_form.html'
+
+@login_required
+def create_workout(request):
+    if request.method == 'POST':
+        form = WorkoutForm(request.POST)
+        if form.is_valid():
+            workout = form.save(commit=False)
+            workout.user = request.user
+            workout.save()
+            form.save_m2m()
+            return redirect('workout_detail', pk=workout.pk)
+    else:
+        form = WorkoutForm()
+    
+    return render(request, 'create_workout.html', {'form': form})
+
+class WorkoutDetailView(DetailView):
+    model = Workout
+    template_name = 'workout_detail.html'
+    
+class WorkoutListView(ListView):
+    model = Workout
+    template_name = 'core/workout_list.html'  # adjust this to match your actual template
 

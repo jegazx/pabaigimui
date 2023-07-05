@@ -19,7 +19,7 @@
     <div class="collapse navbar-collapse" id="navbarColor01">
         <ul class="navbar-nav me-auto">
         <li class="nav-item">
-            <a class="nav-link active" href="">Home
+            <a class="nav-link active" href="{% url 'exercises_list' %}">Exercises
             <span class="visually-hidden">(current)</span>
             </a>
         </li>
@@ -27,6 +27,16 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'profile' %}">Profile</a>
             </li>
+        {% endif %}
+        {% if request.user.is_authenticated %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'create_workout' %}">Create Workout</a>
+        </li>
+        {% endif %}
+        {% if request.user.is_authenticated %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'workout_detail' %}">Workouts</a>
+        </li>
         {% endif %}
         {% if request.user.is_authenticated %}
             <li class="nav-item">

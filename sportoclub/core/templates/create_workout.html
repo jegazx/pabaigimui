@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Create workout</h2>
+  <form method="POST" id="workout-form">
+    {% csrf_token %}
+    {{ form.name }}
+    {% for category, exercises in form.exercises.field.choices %}
+    <div>
+      <fieldset>
+        <legend>{{ category }}</legend>
+        {% for value, name in exercises %}
+          <input type="checkbox" class="btn-check exercise-checkbox" name="{{ form.exercises.html_name }}" id="btncheck{{ value }}" value="{{ value }}" autocomplete="off">
+          <label class="btn btn-primary" for="btncheck{{ value }}">{{ name }}</label>
+        {% endfor %}
+      </fieldset>
+    </div>
+    {% endfor %}
+    <button type="submit">Save</button>
+  </form>
+
+  <h2>Checked Exercises</h2>
+  <ul id="checked-exercises">
+  </ul>
+
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('.exercise-checkbox').change(function() {
+        var exerciseName = $(this).next('label').text();
+        if (this.checked) {
+          $('#checked-exercises').append('<li>' + exerciseName + '</li>');
+        } else {
+          $("#checked-exercises li:contains('" + exerciseName + "')").remove();
+        }
+      });
+    });
+  </script>
+
+{% endblock %}

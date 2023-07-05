@@ -18,8 +18,6 @@
     {% for exercise in exercises %}
       <li>
         <h3><a href="{% url 'exercise_detail' exercise.id %}">{{ exercise.name }}</a></h3>
-        {% comment %} <p>Category: {{ exercise.category.name }}</p>
-        <p>Video URL: {{ exercise.video_url }}</p> {% endcomment %}
       </li>
     {% empty %}
       <li>Choose Exercise Category. </li>
