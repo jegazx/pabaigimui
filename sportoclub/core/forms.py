@@ -1,5 +1,6 @@
 from django import forms
-from django.forms import ModelMultipleChoiceField
+from django.forms import ModelMultipleChoiceField, inlineformset_factory, modelformset_factory
+from django.shortcuts import redirect, render
 from . import models
 
 
@@ -30,3 +31,18 @@ class WorkoutForm(forms.ModelForm):
             if exercise_choices:
                 choices.append((category.name, exercise_choices))
         self.fields['exercises'].choices = choices
+
+class WorkoutExerciseForm(forms.ModelForm):
+    class Meta:
+        model = models.WorkoutExercise
+        fields = ('exercise', 'sets', 'reps_per_set')
+
+    def __init__(self, *args, **kwargs):
+        workout_id = kwargs.pop('workout_id', None)
+        super(WorkoutExerciseForm, self).__init__(*args, **kwargs)
+        if workout_id:
+            self.fields['exercise'].queryset = models.Exercise.objects.filter(workoutexercise__workout_id=workout_id)
+
+
+
+

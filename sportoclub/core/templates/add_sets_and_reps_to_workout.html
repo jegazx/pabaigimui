@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Add sets and reps: {{ workout.name }}</h2>
+  <form method="POST">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    {% for form in formset %}
+      <div class="form-group">
+        <label for="{{ form.exercise.id_for_label }}">{{ form.exercise.label }}</label>
+        {{ form.exercise }}
+        {{ form.sets }}
+        {{ form.reps_per_set }}
+      </div>
+    {% endfor %}
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}

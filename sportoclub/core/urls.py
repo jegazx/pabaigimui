@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import  ExerciseDetailView, ExerciseCreateView, ExerciseUpdateView, exercises_list, WorkoutDetailView
+from .views import  ExerciseDetailView, ExerciseCreateView, ExerciseUpdateView, exercises_list, WorkoutDetailView, WorkoutListView
 from . import views
 
 urlpatterns = [
@@ -10,5 +10,7 @@ urlpatterns = [
     path('exercises/<int:pk>/edit/', ExerciseUpdateView.as_view(), name='exercise_edit'),
     path('workouts/<int:pk>/', WorkoutDetailView.as_view(), name='workout_detail'),
     path('workout/new/', views.create_workout, name='create_workout'),
+    path('workouts/', WorkoutListView.as_view(), name='workout_list'),
+    path('workouts/<int:pk>/add_sets_reps/', views.add_sets_and_reps_to_workout, name='add_sets_and_reps_to_workout'),
 
 ]

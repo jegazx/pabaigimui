@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>My Workouts</h1>
+  <ul>
+  {% for workout in workouts %}
+    <li>
+      <h2><a href="{% url 'workout_detail' workout.id %}">{{ workout.name }}</a></h2>
+      <p>{{ workout.user }}</p>
+    </li>
+  {% empty %}
+    <li>No workouts yet.</li>
+  {% endfor %}
+  </ul>
+{% endblock %}

@@ -35,7 +35,7 @@
         {% endif %}
         {% if request.user.is_authenticated %}
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'workout_detail' %}">Workouts</a>
+            <a class="nav-link" href="{% url 'workout_list' %}">Workouts</a>
         </li>
         {% endif %}
         {% if request.user.is_authenticated %}
