@@ -32,7 +32,6 @@ class Exercise(models.Model):
 class Workout(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
-    exercises = models.ManyToManyField(Exercise, related_name="WorkoutExercises")
 
     class Meta:
         verbose_name = _("workout")
@@ -43,10 +42,11 @@ class Workout(models.Model):
 
     def get_absolute_url(self):
         return reverse("workout_detail", kwargs={"pk": self.pk})
+
     
 class WorkoutExercise(models.Model):
-    workout = models.ForeignKey(Workout, on_delete=models.CASCADE)
-    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
+    workout = models.ForeignKey(Workout, on_delete=models.CASCADE, related_name="workoutexercises")
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name="workoutexercises")
     sets = models.PositiveIntegerField()
     reps_per_set = models.PositiveIntegerField()  
 
