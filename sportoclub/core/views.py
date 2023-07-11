@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import WorkoutForm, WorkoutExerciseForm
 from django.forms import formset_factory
+from django import forms
 
 
 WorkoutExerciseFormSet = formset_factory(WorkoutExerciseForm, extra=1)
@@ -65,13 +66,12 @@ def create_workout(request):
             workout = form.save(commit=False)
             workout.user = request.user
             workout.save()
-            form.save_m2m()
-            return redirect('add_sets_and_reps_to_workout', pk=workout.pk)
+            workout.exercises.set(form.cleaned_data['exercises'])
+            return redirect('add_sets_and_reps_to_workout', workout_id=workout.id)
     else:
         form = WorkoutForm()
+
     return render(request, 'create_workout.html', {'form': form})
-
-
 
 class WorkoutDetailView(DetailView):
     model = Workout
@@ -85,22 +85,39 @@ class WorkoutListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Workout.objects.filter(user=self.request.user)
 
+# @login_required
+# def add_sets_and_reps_to_workout(request, workout_id):
+#     WorkoutExerciseFormSet = formset_factory(WorkoutExerciseForm, extra=0)
+#     workout = get_object_or_404(Workout, id=workout_id)
+#     if request.method == 'POST':
+#         formset = WorkoutExerciseFormSet(request.POST, form_kwargs={'workout_id': workout.id})
+#         if formset.is_valid():
+#             for form in formset:
+#                 workout_exercise = form.save(commit=False)
+#                 workout_exercise.workout = workout
+#                 workout_exercise.save()
+#             return redirect('workout_detail', pk=workout.id)
+#     else:
+#         initial_data = [{'exercise': exercise.id} for exercise in workout.exercises.all()]
+#         formset = WorkoutExerciseFormSet(initial=initial_data, form_kwargs={'workout_id': workout.id})
+
+#     return render(request, 'add_sets_and_reps_to_workout.html', {'formset': formset, 'workout': workout})
+# veikiantis
+
 @login_required
-def add_sets_and_reps_to_workout(request, pk):
-    workout = get_object_or_404(Workout, pk=pk)
-    if request.method == "POST":
-        formset = WorkoutExerciseFormSet(request.POST)
+def add_sets_and_reps_to_workout(request, workout_id):
+    WorkoutExerciseFormSet = formset_factory(WorkoutExerciseForm, extra=0)
+    workout = get_object_or_404(Workout, id=workout_id)
+    if request.method == 'POST':
+        formset = WorkoutExerciseFormSet(request.POST, form_kwargs={'workout_id': workout.id})
         if formset.is_valid():
-            instances = formset.save(commit=False)
-            for instance in instances:
-                instance.workout = workout
-                instance.save()
-            return redirect('workout_detail', pk=workout.pk)
+            for form in formset:
+                workout_exercise = form.save(commit=False)
+                workout_exercise.workout = workout
+                workout_exercise.save()
+            return redirect('workout_detail', pk=workout.id)
     else:
-        formset = WorkoutExerciseFormSet(form_kwargs={'workout_id': workout.pk})
+        initial_data = [{'exercise': exercise.id} for exercise in workout.exercises.all()]
+        formset = WorkoutExerciseFormSet(initial=initial_data, form_kwargs={'workout_id': workout.id})
+
     return render(request, 'add_sets_and_reps_to_workout.html', {'formset': formset, 'workout': workout})
-
-
-
-
-

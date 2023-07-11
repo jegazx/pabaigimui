@@ -15,10 +15,11 @@ class ExerciseForm(forms.ModelForm):
         }
 
 class WorkoutForm(forms.ModelForm):
-    exercises = ModelMultipleChoiceField(
+    exercises = forms.ModelMultipleChoiceField(
         queryset=models.Exercise.objects.all(),
         widget=forms.CheckboxSelectMultiple,
     )
+
     class Meta:
         model = models.Workout
         fields = ['name', 'exercises']
@@ -32,6 +33,21 @@ class WorkoutForm(forms.ModelForm):
                 choices.append((category.name, exercise_choices))
         self.fields['exercises'].choices = choices
 
+
+
+# class WorkoutExerciseForm(forms.ModelForm):
+#     class Meta:
+#         model = models.WorkoutExercise
+#         fields = ('exercise', 'sets', 'reps_per_set')
+
+#     def __init__(self, *args, **kwargs):
+#         workout_id = kwargs.pop('workout_id', None)
+#         super(WorkoutExerciseForm, self).__init__(*args, **kwargs)
+#         if workout_id:
+#             workout = models.Workout.objects.get(id=workout_id)
+#             self.fields['exercise'].queryset = workout.exercises.all()
+# veikiantis
+
 class WorkoutExerciseForm(forms.ModelForm):
     class Meta:
         model = models.WorkoutExercise
@@ -41,7 +57,9 @@ class WorkoutExerciseForm(forms.ModelForm):
         workout_id = kwargs.pop('workout_id', None)
         super(WorkoutExerciseForm, self).__init__(*args, **kwargs)
         if workout_id:
-            self.fields['exercise'].queryset = models.Exercise.objects.filter(workoutexercise__workout_id=workout_id)
+            workout = models.Workout.objects.get(id=workout_id)
+            self.fields['exercise'].queryset = workout.exercises.all()
+
 
 
 

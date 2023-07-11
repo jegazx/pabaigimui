@@ -1,13 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>{{ object.name }}</h2>
+<h2>{{ object.name }}</h2>
     <ul>
     {% for exercise in object.exercises.all %}
         <li>
             <h3>{{ exercise.name }}</h3>
             <p>Category: {{ exercise.category.name }}</p>
             <p>Video URL: {{ exercise.video_url }}</p>
+            {% for workout_exercise in exercise.workoutexercises.all %}
+                {% if workout_exercise.workout == object %}
+                    <p>Sets: {{ workout_exercise.sets }}</p>
+                    <p>Reps per set: {{ workout_exercise.reps_per_set }}</p>
+                {% endif %}
+            {% endfor %}
         </li>
     {% endfor %}
     </ul>
