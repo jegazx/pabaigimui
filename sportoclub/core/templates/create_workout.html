@@ -7,24 +7,4 @@
   {{ form.as_p }}
   <button type="submit">Create</button>
 </form>
-
-  <h2>Checked Exercises</h2>
-  <ul id="checked-exercises">
-  </ul>
-
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      $('.exercise-checkbox').change(function() {
-        var exerciseName = $(this).next('label').text();
-        if (this.checked) {
-          $('#checked-exercises').append('<li>' + exerciseName + '</li>');
-        } else {
-          $("#checked-exercises li:contains('" + exerciseName + "')").remove();
-        }
-      });
-    });
-  </script>
-
-
 {% endblock %}

@@ -11,6 +11,8 @@ urlpatterns = [
     path('workouts/<int:pk>/', WorkoutDetailView.as_view(), name='workout_detail'),
     path('workout/new/', views.create_workout, name='create_workout'),
     path('workouts/', WorkoutListView.as_view(), name='workout_list'),
-    path('workouts/<int:workout_id>/add_sets_reps/', views.add_sets_and_reps_to_workout, name='add_sets_and_reps_to_workout'),
-
+    path('workout/<int:workout_id>/add_sets_reps/', views.add_sets_and_reps_to_workout, name='add_sets_and_reps_to_workout'),
+    path('workout/<int:pk>/start/', views.start_workout, name='start_workout'),
+    path('workout/<int:workout_id>/summary/', views.workout_summary, name='workout_summary'),
+    path('workout/<int:workout_pk>/exercise/<int:exercise_pk>', views.next_exercise, name='next_exercise'),
 ]

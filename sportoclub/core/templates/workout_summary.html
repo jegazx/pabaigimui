@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ workout.name }}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        {% for form in formset %}
+            <div class="exercise">
+                <h2>{{ form.instance.exercise.name }}</h2>
+                {{ form.id }}
+                <div class="fieldWrapper">
+                    {{ form.sets.errors }}
+                    <label for="{{ form.sets.id_for_label }}">Sets:</label>
+                    {{ form.sets }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.reps_per_set.errors }}
+                    <label for="{{ form.reps_per_set.id_for_label }}">Reps per set:</label>
+                    {{ form.reps_per_set }}
+                </div>
+            </div>
+        {% endfor %}
+        <input type="submit" value="Save">
+    </form>
+{% endblock %}

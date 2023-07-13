@@ -13,4 +13,9 @@
         </li>
     {% endfor %}
     </ul>
+    <form method="POST" action="{% url 'start_workout' object.id %}">
+        {% csrf_token %}
+        <input type="submit" value="Start Workout">
+    </form>
+
 {% endblock %}

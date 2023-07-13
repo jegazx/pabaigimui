@@ -55,13 +55,13 @@ class WorkoutExercise(models.Model):
         verbose_name_plural = _("workoutexercises")
 
     def __str__(self):
-        return self.exercise.name
+        return f"{self.exercise.name}, {self.workout.name}"
 
     def get_absolute_url(self):
         return reverse("workoutexercise_detail", kwargs={"pk": self.pk})
 
 class SetLog(models.Model):
-    workou_exercise = models.ForeignKey(WorkoutExercise, on_delete=models.CASCADE)
+    workout_exercise = models.ForeignKey(WorkoutExercise, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     weight = models.PositiveIntegerField()
     reps = models.PositiveIntegerField()
@@ -72,7 +72,7 @@ class SetLog(models.Model):
         verbose_name_plural = _("setlogs")
 
     def __str__(self):
-        return self.name
+        return f"{self.workout_exercise}, {self.weight}, {self.reps}"
 
     def get_absolute_url(self):
         return reverse("setlog_detail", kwargs={"pk": self.pk})

@@ -4,9 +4,46 @@ from django.views.generic.edit import CreateView, UpdateView
 from .models import Exercise, Workout, WorkoutExercise, SetLog, ExerciseCategory
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import WorkoutForm, WorkoutExerciseForm
+from .forms import WorkoutForm, WorkoutExerciseForm, SetLogForm, ExerciseSetLogForm
 from django.forms import formset_factory
 from django import forms
+from django.db.models import Max
+
+def start_workout(request, pk):
+    workout = get_object_or_404(Workout, pk=pk)
+    first_exercise = WorkoutExercise.objects.filter(workout=workout).order_by('id').first()
+    if first_exercise:
+        return redirect('next_exercise', workout_pk=workout.pk, exercise_pk=first_exercise.pk)
+    else:
+        return render(request, 'workout_summary.html')  # or handle this case in some other way
+
+
+def next_exercise(request, workout_pk, exercise_pk):
+    workout = get_object_or_404(Workout, pk=workout_pk)
+    current_exercise = get_object_or_404(WorkoutExercise, pk=exercise_pk)
+    if request.method == "POST":
+        form = ExerciseSetLogForm(request.POST, workout_exercise=current_exercise)
+        if form.is_valid():
+            # create SetLog objects like before
+            # then redirect to next exercise
+            next_exercise = WorkoutExercise.objects.filter(workout=workout, id__gt=current_exercise.id).order_by('id').first()
+            if next_exercise:
+                return redirect('next_exercise', workout_pk=workout.pk, exercise_pk=next_exercise.pk)
+            else:
+                return redirect('workout_summary', workout_id=workout.pk)
+    else:
+        form = ExerciseSetLogForm(workout_exercise=current_exercise)
+    return render(request, 'start_workout.html', {'form': form, 'workout': workout, 'workout_exercise': current_exercise})
+
+def workout_summary(request, workout_id):
+    workout = get_object_or_404(Workout, pk=workout_id)
+    exercise_logs = SetLog.objects.filter(workout_exercise__workout=workout)
+    context = {
+        'workout': workout,
+        'exercise_logs': exercise_logs
+    }
+    return render(request, 'workout_summary.html', context)
+
 
 
 WorkoutExerciseFormSet = formset_factory(WorkoutExerciseForm, extra=1)
@@ -66,12 +103,19 @@ def create_workout(request):
             workout = form.save(commit=False)
             workout.user = request.user
             workout.save()
-            workout.exercises.set(form.cleaned_data['exercises'])
+
+            # Create WorkoutExercise instances for each selected exercise
+            for exercise in form.cleaned_data['exercises']:
+                WorkoutExercise.objects.create(workout=workout, exercise=exercise, sets=0, reps_per_set=0)
+            
             return redirect('add_sets_and_reps_to_workout', workout_id=workout.id)
     else:
         form = WorkoutForm()
 
     return render(request, 'create_workout.html', {'form': form})
+
+
+
 
 class WorkoutDetailView(DetailView):
     model = Workout
@@ -109,15 +153,21 @@ def add_sets_and_reps_to_workout(request, workout_id):
     WorkoutExerciseFormSet = formset_factory(WorkoutExerciseForm, extra=0)
     workout = get_object_or_404(Workout, id=workout_id)
     if request.method == 'POST':
-        formset = WorkoutExerciseFormSet(request.POST, form_kwargs={'workout_id': workout.id})
+        formset = WorkoutExerciseFormSet(request.POST)
         if formset.is_valid():
             for form in formset:
-                workout_exercise = form.save(commit=False)
-                workout_exercise.workout = workout
-                workout_exercise.save()
+                workout_exercise_id = form.cleaned_data.get('id')
+                if workout_exercise_id:
+                    workout_exercise = get_object_or_404(WorkoutExercise, id=workout_exercise_id)
+                    workout_exercise.sets = form.cleaned_data.get('sets')
+                    workout_exercise.reps_per_set = form.cleaned_data.get('reps_per_set')
+                    workout_exercise.save()
             return redirect('workout_detail', pk=workout.id)
     else:
-        initial_data = [{'exercise': exercise.id} for exercise in workout.exercises.all()]
-        formset = WorkoutExerciseFormSet(initial=initial_data, form_kwargs={'workout_id': workout.id})
+        workout_exercises = workout.workoutexercises.exclude(exercise__isnull=True)
+        initial_data = [{'id': workout_exercise.id, 'exercise': workout_exercise.exercise.id, 'sets': workout_exercise.sets, 'reps_per_set': workout_exercise.reps_per_set} for workout_exercise in workout_exercises]
+        formset = WorkoutExerciseFormSet(initial=initial_data)
 
     return render(request, 'add_sets_and_reps_to_workout.html', {'formset': formset, 'workout': workout})
+
+
