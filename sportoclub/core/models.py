@@ -61,6 +61,7 @@ class WorkoutExercise(models.Model):
         return reverse("workoutexercise_detail", kwargs={"pk": self.pk})
 
 class SetLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     workout_exercise = models.ForeignKey(WorkoutExercise, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     weight = models.PositiveIntegerField()

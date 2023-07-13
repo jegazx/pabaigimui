@@ -1,27 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{{ workout.name }}</h1>
-
-    <form method="post">
-        {% csrf_token %}
-        {{ formset.management_form }}
-        {% for form in formset %}
-            <div class="exercise">
-                <h2>{{ form.instance.exercise.name }}</h2>
-                {{ form.id }}
-                <div class="fieldWrapper">
-                    {{ form.sets.errors }}
-                    <label for="{{ form.sets.id_for_label }}">Sets:</label>
-                    {{ form.sets }}
-                </div>
-                <div class="fieldWrapper">
-                    {{ form.reps_per_set.errors }}
-                    <label for="{{ form.reps_per_set.id_for_label }}">Reps per set:</label>
-                    {{ form.reps_per_set }}
-                </div>
-            </div>
-        {% endfor %}
-        <input type="submit" value="Save">
-    </form>
+{% for exercise, data in exercises_data.items %}
+    <h2>{{ exercise.name }}</h2>
+    <table class="table table-hover">
+        <thead>
+            <tr class="table-primary">
+                <th scope="col">Date</th>
+                {% for log in data.0 %}
+                    <th scope="col">Set{{ forloop.counter }} Weight</th>
+                {% endfor %}
+                <th scope="col">Average Weight</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">{{ data.0.0.timestamp.date }}</th>
+                {% for log in data.0 %}
+                    <td>{{ log.weight }}</td>
+                {% endfor %}
+                <td>{{ data.1 }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endfor %}
 {% endblock %}

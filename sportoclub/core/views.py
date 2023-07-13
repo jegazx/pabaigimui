@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import WorkoutForm, WorkoutExerciseForm, SetLogForm, ExerciseSetLogForm
 from django.forms import formset_factory
 from django import forms
-from django.db.models import Max
+from django.db.models import Max, Avg
 
 def start_workout(request, pk):
     workout = get_object_or_404(Workout, pk=pk)
@@ -25,6 +25,13 @@ def next_exercise(request, workout_pk, exercise_pk):
         form = ExerciseSetLogForm(request.POST, workout_exercise=current_exercise)
         if form.is_valid():
             # create SetLog objects like before
+            for i in range(current_exercise.sets):
+                SetLog.objects.create(
+                    user=request.user,
+                    workout_exercise=current_exercise,
+                    weight=form.cleaned_data.get(f'weight_{i}'),
+                    reps=form.cleaned_data.get(f'reps_{i}')
+                )
             # then redirect to next exercise
             next_exercise = WorkoutExercise.objects.filter(workout=workout, id__gt=current_exercise.id).order_by('id').first()
             if next_exercise:
@@ -37,19 +44,28 @@ def next_exercise(request, workout_pk, exercise_pk):
 
 def workout_summary(request, workout_id):
     workout = get_object_or_404(Workout, pk=workout_id)
-    exercise_logs = SetLog.objects.filter(workout_exercise__workout=workout)
+    exercise_logs = SetLog.objects.filter(workout_exercise__workout=workout).order_by('timestamp')
+    
+    # Create a dictionary where each key is an Exercise instance and each value is a list of SetLog instances
+    exercises_data = {}
+    for log in exercise_logs:
+        if log.workout_exercise.exercise in exercises_data:
+            exercises_data[log.workout_exercise.exercise].append(log)
+        else:
+            exercises_data[log.workout_exercise.exercise] = [log]
+            
+    # Calculate the average weight for each Exercise
+    for exercise, logs in exercises_data.items():
+        avg_weight = sum(log.weight for log in logs) / len(logs)
+        exercises_data[exercise] = (logs, avg_weight)
+    
     context = {
         'workout': workout,
-        'exercise_logs': exercise_logs
+        'exercises_data': exercises_data
     }
     return render(request, 'workout_summary.html', context)
 
 
-
-WorkoutExerciseFormSet = formset_factory(WorkoutExerciseForm, extra=1)
-
-
-# Create your views here.
 def index(request):
     if request.user.is_authenticated:  
         # User is logged in

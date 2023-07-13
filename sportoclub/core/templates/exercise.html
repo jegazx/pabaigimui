@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1>{{ workout.name }}: {{ exercise.name }}</h1>
+    <p>Date: {{ workout_exercise.timestamp.date }}</p>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
