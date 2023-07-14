@@ -7,9 +7,11 @@
     <li>
       <h2><a href="{% url 'workout_detail' workout.id %}">{{ workout.name }}</a></h2>
       <p>{{ workout.user }}</p>
+      <p><a href="{% url 'workout_charts' workout.id %}">View Workout Chart</a></p>
     </li>
   {% empty %}
     <li>No workouts yet.</li>
   {% endfor %}
   </ul>
 {% endblock %}
+

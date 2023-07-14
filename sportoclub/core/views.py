@@ -8,6 +8,11 @@ from .forms import WorkoutForm, WorkoutExerciseForm, SetLogForm, ExerciseSetLogF
 from django.forms import formset_factory
 from django import forms
 from django.db.models import Max, Avg
+import seaborn as sns
+import matplotlib.pyplot as plt
+import os
+from django.conf import settings
+from django.templatetags.static import static
 
 def start_workout(request, pk):
     workout = get_object_or_404(Workout, pk=pk)
@@ -64,6 +69,49 @@ def workout_summary(request, workout_id):
         'exercises_data': exercises_data
     }
     return render(request, 'workout_summary.html', context)
+
+def workout_charts(request, workout_id):
+    workout = get_object_or_404(Workout, pk=workout_id)
+    if not workout:
+        return render(request, 'no_workouts.html')
+
+    exercise_logs = SetLog.objects.filter(workout_exercise__workout=workout).order_by('timestamp')
+    exercises_data = {}
+
+    for log in exercise_logs:
+        if log.workout_exercise.exercise in exercises_data:
+            exercises_data[log.workout_exercise.exercise].append(log)
+        else:
+            exercises_data[log.workout_exercise.exercise] = [log]
+
+    image_paths = []
+
+    for exercise, logs in exercises_data.items():
+        data = [log.weight for log in logs]
+        dates = [log.timestamp.date() for log in logs]
+
+        print(data)
+
+        print(dates)
+
+        plt.figure(figsize=(10, 6))
+        sns.lineplot(x=dates, y=data)
+        plt.title(exercise.name)
+        
+        # Save the figure to a .png image file
+        image_filename = f"{exercise.name.replace(' ', '_')}_plot.jpg"
+        image_filepath = os.path.join(settings.STATIC_ROOT, 'images', image_filename)
+        plt.savefig(image_filepath)
+        plt.close()
+
+        # Store the static URL path to the image file
+        image_url = static(f'images/{image_filename}')
+        image_paths.append(image_url)
+    context = {
+        'workout': workout,
+        'image_paths': image_paths,
+    }
+    return render(request, 'workout_charts.html', context)
 
 
 def index(request):

@@ -15,4 +15,5 @@ urlpatterns = [
     path('workout/<int:pk>/start/', views.start_workout, name='start_workout'),
     path('workout/<int:workout_id>/summary/', views.workout_summary, name='workout_summary'),
     path('workout/<int:workout_pk>/exercise/<int:exercise_pk>', views.next_exercise, name='next_exercise'),
+    path('workouts/<int:workout_id>/charts/', views.workout_charts, name='workout_charts'),
 ]
