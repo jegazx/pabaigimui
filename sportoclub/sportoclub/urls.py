@@ -25,6 +25,6 @@ urlpatterns = [
     path('profile/', include('user_profile.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('i18n/', include('django.conf.urls.i18n')),
-    path('tinymce/', include('tinymce.urls')),
-]   + (static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
-  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
+    path('tinymce/', include('tinymce.urls')),    
+]  + (static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
+   + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))

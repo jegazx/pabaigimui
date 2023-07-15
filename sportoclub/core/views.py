@@ -9,10 +9,15 @@ from django.forms import formset_factory
 from django import forms
 from django.db.models import Max, Avg
 import seaborn as sns
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import os
 from django.conf import settings
 from django.templatetags.static import static
+
+
+
 
 def start_workout(request, pk):
     workout = get_object_or_404(Workout, pk=pk)
@@ -99,14 +104,17 @@ def workout_charts(request, workout_id):
         plt.title(exercise.name)
         
         # Save the figure to a .png image file
-        image_filename = f"{exercise.name.replace(' ', '_')}_plot.jpg"
-        image_filepath = os.path.join(settings.STATIC_ROOT, 'images', image_filename)
+        image_filename = f"{exercise.name.replace(' ', '_')}_plot.png"
+        image_filepath = os.path.join(settings.MEDIA_ROOT, 'images', image_filename)
+        os.makedirs(os.path.dirname(image_filepath), exist_ok=True)
         plt.savefig(image_filepath)
         plt.close()
 
+
         # Store the static URL path to the image file
-        image_url = static(f'images/{image_filename}')
+        image_url = settings.MEDIA_URL + 'images/' + image_filename
         image_paths.append(image_url)
+
     context = {
         'workout': workout,
         'image_paths': image_paths,

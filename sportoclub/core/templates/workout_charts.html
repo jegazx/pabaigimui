@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block content %}
 {% for image_path in image_paths %}
     <img src="{{ image_path }}" alt="Chart">
 {% endfor %}
-
 {% endblock %}
