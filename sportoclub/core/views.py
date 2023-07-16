@@ -15,12 +15,14 @@ import matplotlib.pyplot as plt
 import os
 from django.conf import settings
 from django.templatetags.static import static
+from django.utils import timezone
 
 
 
 
 def start_workout(request, pk):
     workout = get_object_or_404(Workout, pk=pk)
+    print(workout)
     first_exercise = WorkoutExercise.objects.filter(workout=workout).order_by('id').first()
     if first_exercise:
         return redirect('next_exercise', workout_pk=workout.pk, exercise_pk=first_exercise.pk)
@@ -36,12 +38,13 @@ def next_exercise(request, workout_pk, exercise_pk):
         if form.is_valid():
             # create SetLog objects like before
             for i in range(current_exercise.sets):
-                SetLog.objects.create(
+                setlog = SetLog.objects.create(
                     user=request.user,
                     workout_exercise=current_exercise,
                     weight=form.cleaned_data.get(f'weight_{i}'),
                     reps=form.cleaned_data.get(f'reps_{i}')
                 )
+                print(setlog)
             # then redirect to next exercise
             next_exercise = WorkoutExercise.objects.filter(workout=workout, id__gt=current_exercise.id).order_by('id').first()
             if next_exercise:
@@ -54,7 +57,10 @@ def next_exercise(request, workout_pk, exercise_pk):
 
 def workout_summary(request, workout_id):
     workout = get_object_or_404(Workout, pk=workout_id)
-    exercise_logs = SetLog.objects.filter(workout_exercise__workout=workout).order_by('timestamp')
+    print(workout)
+    now = timezone.now()
+    start_time = now - timezone.timedelta(hours=1)
+    exercise_logs = SetLog.objects.filter(workout_exercise__workout=workout, timestamp__gte=start_time).order_by('timestamp')
     
     # Create a dictionary where each key is an Exercise instance and each value is a list of SetLog instances
     exercises_data = {}
@@ -80,7 +86,7 @@ def workout_charts(request, workout_id):
     if not workout:
         return render(request, 'no_workouts.html')
 
-    exercise_logs = SetLog.objects.filter(workout_exercise__workout=workout).order_by('timestamp')
+    exercise_logs = SetLog.objects.filter(workout_exercise__workout=workout, user=request.user).order_by('timestamp')
     exercises_data = {}
 
     for log in exercise_logs:
