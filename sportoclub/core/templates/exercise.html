@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="container mt-5">
     <h1>{{ workout.name }}: {{ exercise.name }}</h1>
     <p>Date: {{ workout_exercise.timestamp.date }}</p>
-    <form method="post">
+
+    <form method="post" class="mb-3">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Next Exercise</button>
+        <div class="form-group">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-primary">Next Exercise</button>
     </form>
+</div>
 {% endblock %}

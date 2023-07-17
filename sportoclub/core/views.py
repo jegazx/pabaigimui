@@ -17,9 +17,6 @@ from django.conf import settings
 from django.templatetags.static import static
 from django.utils import timezone
 
-
-
-
 def start_workout(request, pk):
     workout = get_object_or_404(Workout, pk=pk)
     print(workout)
@@ -28,7 +25,6 @@ def start_workout(request, pk):
         return redirect('next_exercise', workout_pk=workout.pk, exercise_pk=first_exercise.pk)
     else:
         return render(request, 'workout_summary.html')  # or handle this case in some other way
-
 
 def next_exercise(request, workout_pk, exercise_pk):
     workout = get_object_or_404(Workout, pk=workout_pk)
@@ -127,7 +123,6 @@ def workout_charts(request, workout_id):
     }
     return render(request, 'workout_charts.html', context)
 
-
 def index(request):
     if request.user.is_authenticated:  
         # User is logged in
@@ -192,9 +187,6 @@ def create_workout(request):
 
     return render(request, 'create_workout.html', {'form': form})
 
-
-
-
 class WorkoutDetailView(DetailView):
     model = Workout
     template_name = 'workout_detail.html'
@@ -206,25 +198,6 @@ class WorkoutListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Workout.objects.filter(user=self.request.user)
-
-# @login_required
-# def add_sets_and_reps_to_workout(request, workout_id):
-#     WorkoutExerciseFormSet = formset_factory(WorkoutExerciseForm, extra=0)
-#     workout = get_object_or_404(Workout, id=workout_id)
-#     if request.method == 'POST':
-#         formset = WorkoutExerciseFormSet(request.POST, form_kwargs={'workout_id': workout.id})
-#         if formset.is_valid():
-#             for form in formset:
-#                 workout_exercise = form.save(commit=False)
-#                 workout_exercise.workout = workout
-#                 workout_exercise.save()
-#             return redirect('workout_detail', pk=workout.id)
-#     else:
-#         initial_data = [{'exercise': exercise.id} for exercise in workout.exercises.all()]
-#         formset = WorkoutExerciseFormSet(initial=initial_data, form_kwargs={'workout_id': workout.id})
-
-#     return render(request, 'add_sets_and_reps_to_workout.html', {'formset': formset, 'workout': workout})
-# veikiantis
 
 @login_required
 def add_sets_and_reps_to_workout(request, workout_id):
@@ -247,5 +220,3 @@ def add_sets_and_reps_to_workout(request, workout_id):
         formset = WorkoutExerciseFormSet(initial=initial_data)
 
     return render(request, 'add_sets_and_reps_to_workout.html', {'formset': formset, 'workout': workout})
-
-

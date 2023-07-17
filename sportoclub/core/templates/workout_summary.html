@@ -1,27 +1,31 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% for exercise, data in exercises_data.items %}
-    <h2>{{ exercise.name }}</h2>
-    <table class="table table-hover">
+<div class="container mt-5">
+  {% for exercise, data in exercises_data.items %}
+    <div class="mb-4">
+      <h2>{{ exercise.name }}</h2>
+      <table class="table table-hover">
         <thead>
-            <tr class="table-primary">
-                <th scope="col">Date</th>
-                {% for log in data.0 %}
-                    <th scope="col">Set{{ forloop.counter }} Weight</th>
-                {% endfor %}
-                <th scope="col">Average Weight</th>
-            </tr>
+          <tr class="table-primary">
+            <th scope="col">Date</th>
+            {% for log in data.0 %}
+              <th scope="col">Set{{ forloop.counter }} Weight</th>
+            {% endfor %}
+            <th scope="col">Average Weight</th>
+          </tr>
         </thead>
         <tbody>
-            <tr>
-                <th scope="row">{{ data.0.0.timestamp.date }}</th>
-                {% for log in data.0 %}
-                    <td>{{ log.weight }}</td>
-                {% endfor %}
-                <td>{{ data.1 }}</td>
-            </tr>
+          <tr>
+            <th scope="row">{{ data.0.0.timestamp.date }}</th>
+            {% for log in data.0 %}
+              <td>{{ log.weight }}</td>
+            {% endfor %}
+            <td>{{ data.1 }}</td>
+          </tr>
         </tbody>
-    </table>
-{% endfor %}
+      </table>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}

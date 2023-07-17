@@ -1,27 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Exercise List</h2>
+<div class="container mt-5">
+    <h2>Exercise List</h2>
 
-  <form method="GET">
-    <label for="category">Choose a category:</label>
-    <select name="category" id="category">
-      <option value="">--All--</option>
-      {% for category in categories %}
-      <option value="{{ category.id }}" {% if category.id == current_category_id %}selected{% endif %}>{{ category.name }}</option>
-      {% endfor %}
-    </select>
-    <button type="submit">Filter</button>
-  </form>
+    <form method="GET" class="mb-3">
+        <div class="form-group">
+            <label for="category">Choose a category:</label>
+            <select name="category" id="category" class="form-control">
+                <option value="">--All--</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if category.id == current_category_id %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
 
-  <ul>
-    {% for exercise in exercises %}
-      <li>
-        <h3><a href="{% url 'exercise_detail' exercise.id %}">{{ exercise.name }}</a></h3>
-      </li>
-    {% empty %}
-      <li>Choose Exercise Category. </li>
-    {% endfor %}
-  </ul>
+    <ul class="list-group">
+        {% for exercise in exercises %}
+        <li class="list-group-item">
+            <h3><a href="{% url 'exercise_detail' exercise.id %}">{{ exercise.name }}</a></h3>
+        </li>
+        {% empty %}
+        <li class="list-group-item">Choose Exercise Category.</li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}
-

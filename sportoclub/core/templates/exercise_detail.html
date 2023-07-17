@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>{{ object.name }}</h2>
-  <p>Category: {{ object.category.name }}</p>
-  <p>
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ object.video_embed|slice:":11" }}"
-    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; 
-    gyroscope; picture-in-picture" allowfullscreen></iframe>
-  </p>
+<div class="container mt-5">
+    <h2>{{ object.name }}</h2>
+    <h4>Category: {{ object.category.name }}</h4>
+    <div class="embed-responsive embed-responsive-16by9" style="max-width: 800px;">
+        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/{{ object.video_embed|slice:":11" }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width: 100%; height: 500px;"></iframe>
+    </div>
+</div>
 {% endblock %}

@@ -1,18 +1,32 @@
 {% extends 'base.html' %}
 {% block title %}Login to {{ block.super }}{% endblock title %}
 {% block content %}
-<h1>Login to Exercises app</h1>
-{% if form.errors %}
-<p class="box box-error">Login error. Please try again.</p>
-{% endif %}
-<form method="post" action="{% url 'login' %}?next={% url 'index' %}">
-{% csrf_token %}
-{{ form.as_p }}
-{% if request.GET.next and '/accounts/' not in request.GET.next %}
-    <input type="hidden" name="next" value="{{ request.GET.next }}">
-{% endif %}
-<p><button type="submit">Log in</button></p>
-</form>
-<p><a href="{% url 'password_reset' %}">Forgot password?</a></p>
-<p>If you do not have an account, please <a href="{% url 'signup' %}">sign up</a>.
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title text-center">Login to Exercises app</h1>
+                    {% if form.errors %}
+                        <div class="alert alert-danger">Login error. Please try again.</div>
+                    {% endif %}
+                    <form method="post" action="{% url 'login' %}?next={% url 'index' %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        {% if request.GET.next and '/accounts/' not in request.GET.next %}
+                            <input type="hidden" name="next" value="{{ request.GET.next }}">
+                        {% endif %}
+                        <div class="mt-4 text-center">
+                            <button type="submit" class="btn btn-primary">Log in</button>
+                        </div>
+                    </form>
+                    <div class="mt-4 text-center">
+                        <p><a href="{% url 'password_reset' %}">Forgot password?</a></p>
+                        <p>If you do not have an account, please <a href="{% url 'signup' %}">sign up</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}

@@ -1,17 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="container mt-5">
   <h1>My Workouts</h1>
-  <ul>
-  {% for workout in workouts %}
-    <li>
-      <h2><a href="{% url 'workout_detail' workout.id %}">{{ workout.name }}</a></h2>
-      <p>{{ workout.user }}</p>
-      <p><a href="{% url 'workout_charts' workout.id %}">View Workout Chart</a></p>
-    </li>
-  {% empty %}
-    <li>No workouts yet.</li>
-  {% endfor %}
-  </ul>
+  {% if workouts %}
+    <ul class="list-group">
+      {% for workout in workouts %}
+        <li class="list-group-item">
+          <h2><a href="{% url 'workout_detail' workout.id %}">{{ workout.name }}</a></h2>
+          <p>{{ workout.user }}</p>
+          <p><a href="{% url 'workout_charts' workout.id %}">View Workout Chart</a></p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No workouts yet.</p>
+  {% endif %}
+</div>
 {% endblock %}
-

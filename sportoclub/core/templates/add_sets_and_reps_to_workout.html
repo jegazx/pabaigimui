@@ -1,29 +1,34 @@
 {% extends 'base.html' %}
 
 {% block content %}
-   {% comment %} <h2>Add exercises to {{ workout.name }}</h2>
-  <form method="POST">
-    {% csrf_token %}
-    {{ formset.management_form }}
-    {% for form in formset %}
-      {{ form.as_p }}
-    {% endfor %}
-    <button type="submit">Add exercises</button>
- </form>   {% endcomment %}
- {% comment %} veikiantis kodas su issaugojimu {% endcomment %}
-<h2>Add sets and reps to {{ workout.name }}</h2>
- <form method="POST">
-    {% csrf_token %}
-    {{ formset.management_form }}
-    {% for form in formset %}
-      <div class="workout-exercise-form">
-        {{ form.id.as_hidden }}
-        {{ form.exercise }} <!-- this will display the exercise name -->
-        <h5>Sets</h5>{{ form.sets }} <!-- this will display the sets input field -->
-        <h5>Reps</h5>{{ form.reps_per_set }} <!-- this will display the reps_per_set input field -->
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">Add sets and reps to {{ workout.name }}</h2>
+          <form method="POST">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            {% for form in formset %}
+              <div class="workout-exercise-form">
+                {{ form.id.as_hidden }}
+                {{ form.exercise }}
+                <div class="form-group">
+                  <h5>Sets</h5>
+                  {{ form.sets }}
+                </div>
+                <div class="form-group">
+                  <h5>Reps</h5>
+                  {{ form.reps_per_set }}
+                </div>
+              </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
       </div>
-    {% endfor %}
-    <input type="submit" value="Submit">
-  </form>
-  
+    </div>
+  </div>
+</div>
 {% endblock %}

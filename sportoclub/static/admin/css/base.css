@@ -100,6 +100,10 @@ body {
     color: var(--body-fg);
     background: var(--body-bg);
 }
+.center-content {
+    width: 200%;
+}
+
 
 /* LINKS */
 

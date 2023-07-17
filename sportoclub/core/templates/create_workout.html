@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Create a new workout</h2>
-<form method="POST">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Create</button>
-</form>
+<div class="container mt-5">
+  <h2>Create a new workout</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3 large-text">
+      {{ form.as_p }}
+    </div>
+    <button class="btn btn-primary" type="submit">Create</button>
+  </form>
+</div>
 {% endblock %}

@@ -3,7 +3,14 @@
 {% load static %}
 
 {% block content %}
-{% for image_path in image_paths %}
-    <img src="{{ image_path }}" alt="Chart">
-{% endfor %}
+<div class="container mt-5">
+  <h1>Workout Charts</h1>
+  {% if image_paths %}
+    {% for image_path in image_paths %}
+      <img src="{{ image_path }}" alt="Chart" class="img-fluid">
+    {% endfor %}
+  {% else %}
+    <p>No workout charts available.</p>
+  {% endif %}
+</div>
 {% endblock %}

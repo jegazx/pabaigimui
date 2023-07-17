@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-size: 0.875rem;
+    font-family: var(--font-family-primary);
+    color: var(--body-fg);
+    background: var(--body-bg);
+}
+
+.center-content {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: top !important;
+    height: 100vh !important; /* Adjust as needed */
+}
+
+.user-profile-picture {
+    width: 250px;  /* Or any other size you prefer */
+    height: 250px; /* Make sure this is the same as the width for a square aspect ratio */
+    object-fit: cover; /* This makes sure the image is scaled while maintaining its aspect ratio */
+}
+
+.large-text {
+    font-size: 1.5em;
+}
